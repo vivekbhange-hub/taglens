@@ -1,0 +1,32 @@
+---
+import Guide from '../../layouts/Guide.astro';
+---
+<Guide
+  title="Photoshop Generative Fill and the AI label on Instagram | TagLens"
+  description="Used Generative Fill once and now Instagram says “AI info”? Photoshop records generative edits in Content Credentials. Here is which tools do it, what the file says, and how to check."
+  h1="Photoshop Generative Fill and the “AI info” label"
+  updated="2026-11-21"
+>
+  <p>Photoshop and Lightroom are the most common reason a real photo ends up with an AI label. When you use a generative feature, Adobe records it in the file’s <a href="/guides/what-is-c2pa-content-credentials/">Content Credentials</a>, and platforms like Instagram, Facebook, TikTok and LinkedIn read that record.</p>
+
+  <h2>Which features add the declaration</h2>
+  <ul>
+    <li><strong>Generative Fill</strong> and <strong>Generative Expand</strong> in Photoshop.</li>
+    <li><strong>Generative Remove</strong> and other Firefly-powered tools in Photoshop and Lightroom.</li>
+    <li>Anything made in <strong>Adobe Firefly</strong> or <strong>Adobe Express</strong> with generative AI.</li>
+  </ul>
+  <p>Classic tools like the Healing Brush, Content-Aware Fill (the non-generative one), adjustments, masks and crops don’t declare AI.</p>
+
+  <h2>What the file actually says</h2>
+  <p>A photo with one generative edit is usually marked as <code>compositeWithTrainedAlgorithmicMedia</code>, meaning a real capture with a generated part. A fully generated Firefly image is marked <code>trainedAlgorithmicMedia</code>. The first gets Meta’s softer “AI info” in the menu; the second gets a visible label. <a href="/guides/why-instagram-says-ai-info/">More on how Meta treats each</a>.</p>
+
+  <h2>How to check</h2>
+  <ol>
+    <li>Drop the exported file into <a href="/#checker">TagLens</a>.</li>
+    <li>Look at <strong>Content Credentials → History</strong>. You’ll see each recorded step and the tool that made it, for example “Edited with Adobe Photoshop — Edited with generative AI”.</li>
+    <li>The platform cards show what Instagram, TikTok, YouTube, LinkedIn and X are likely to do with it.</li>
+  </ol>
+
+  <h2>If the label doesn’t fit what you did</h2>
+  <p>If you used a generative feature, the label is accurate, even for a small edit. If you want an export without it, redo that change with a non-generative tool (Healing Brush, Clone Stamp, classic Content-Aware Fill) and export again. Adobe adds credentials on its own when generative AI is used, so the honest fix is in the edit, not in stripping the file afterwards.</p>
+</Guide>

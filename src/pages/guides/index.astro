@@ -1,0 +1,22 @@
+---
+import Base from '../../layouts/Base.astro';
+const guides = [
+  ['/guides/why-instagram-says-ai-info/', 'Why does Instagram say “AI info” on my photo?', 'What triggers the label, why real photos get it, and what to do.'],
+  ['/guides/photoshop-generative-fill-ai-label/', 'Photoshop Generative Fill and the “AI info” label', 'Which Adobe features declare AI and how to check your export.'],
+  ['/guides/what-is-c2pa-content-credentials/', 'What are Content Credentials (C2PA)?', 'The signed history inside a file, compared with IPTC fields and watermarks.'],
+];
+---
+<Base title="Guides: AI labels, Content Credentials and photo metadata | TagLens" description="Plain-English guides to AI labels on Instagram, TikTok and LinkedIn, Content Credentials (C2PA), IPTC AI fields and photo privacy.">
+  <section class="wrap narrow" style="padding-top:56px">
+    <p class="eyebrow">Guides</p>
+    <h1 style="font-size:clamp(2rem,5vw,3rem)">AI labels, explained</h1>
+    <div style="display:grid;gap:12px;margin-top:24px">
+      {guides.map(([href, t, d]) => (
+        <a class="card" href={href} style="text-decoration:none;display:block">
+          <h3 style="margin-bottom:.3em">{t}</h3>
+          <span style="color:var(--muted)">{d}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

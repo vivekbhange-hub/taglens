@@ -1,0 +1,29 @@
+---
+import Base from './Base.astro';
+
+interface Props { title: string; description: string; h1: string; updated: string; }
+const { title, description, h1, updated } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: h1,
+  description,
+  dateModified: updated,
+  mainEntityOfPage: url,
+  author: { '@type': 'Person', name: 'Vivek Bhange', url: 'https://vivekbhange.tech' },
+  publisher: { '@type': 'Person', name: 'Vivek Bhange', url: 'https://vivekbhange.tech' },
+};
+---
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <article class="wrap narrow prose" style="padding-top:56px">
+    <p class="eyebrow"><a href="/guides/">Guides</a> · Updated {new Date(updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+    <h1 style="font-size:clamp(2rem,5vw,3rem)">{h1}</h1>
+    <slot />
+    <div class="card cta-box">
+      <div><strong>Check your own file</strong><br /><span style="color:var(--muted)">See which field triggers the label. Free, and nothing is uploaded.</span></div>
+      <a class="btn" href="/#checker">Open TagLens</a>
+    </div>
+    <p style="margin-top:2em;color:var(--muted);font-size:.92rem">Written by <a href="https://vivekbhange.tech" rel="author">Vivek Bhange</a>. Platform rules change often; if something here is out of date, <a href="https://github.com/vivekbhange-hub/taglens/issues" rel="noopener">open an issue</a>.</p>
+  </article>
+</Base>

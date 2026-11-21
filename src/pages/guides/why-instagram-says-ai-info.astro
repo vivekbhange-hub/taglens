@@ -1,0 +1,46 @@
+---
+import Guide from '../../layouts/Guide.astro';
+---
+<Guide
+  title="Why does Instagram say “AI info” on my photo? | TagLens"
+  description="Instagram adds “AI info” when your file declares AI in its metadata, carries an invisible watermark, or you disclosed it. Here is what triggers it, why real photos get it, and how to check your own file."
+  h1="Why does Instagram say “AI info” on my photo?"
+  updated="2026-11-21"
+>
+  <p>You posted a photo and Instagram put <strong>AI info</strong> on it. Maybe you used AI, maybe you just removed a stray person in the background. Either way, the label almost always comes from something <em>inside the file</em>, not from Instagram looking at the picture.</p>
+
+  <h2>The three things that trigger it</h2>
+  <ol>
+    <li><strong>Metadata that declares AI.</strong> Apps that use generative AI write a standard note into the image file. There are two kinds: signed <a href="/guides/what-is-c2pa-content-credentials/">Content Credentials (C2PA)</a> and the plain IPTC field <code>DigitalSourceType</code>. Meta reads both.</li>
+    <li><strong>Invisible watermarks.</strong> Some AI generators hide a watermark in the pixels themselves. Meta looks for these too. No metadata tool, including TagLens, can see them.</li>
+    <li><strong>Your own disclosure.</strong> If you turned on the AI label when posting, or Meta’s systems decided realistic AI video or audio needed one.</li>
+  </ol>
+
+  <h2>Label on the post, or only in the menu?</h2>
+  <p>Meta treats two cases differently:</p>
+  <table>
+    <thead><tr><th>What the file says</th><th>What you see</th></tr></thead>
+    <tbody>
+      <tr><td><code>trainedAlgorithmicMedia</code>: the whole image was generated</td><td>“AI info” shown on the post</td></tr>
+      <tr><td><code>compositeWithTrainedAlgorithmicMedia</code>: a real photo with an AI edit</td><td>“AI info” inside the post’s menu</td></tr>
+      <tr><td>Nothing about AI</td><td>No label from the file</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Why real photos get labelled</h2>
+  <p>Most complaints come from photos that are mostly real but passed through one AI feature. Common examples:</p>
+  <ul>
+    <li><strong>Photoshop and Lightroom:</strong> Generative Fill, Generative Expand and generative Remove. See <a href="/guides/photoshop-generative-fill-ai-label/">the Photoshop guide</a>.</li>
+    <li><strong>Phones:</strong> Google Pixel Magic Editor, Samsung Galaxy AI edits and similar “erase” or “reimagine” tools.</li>
+    <li><strong>Online editors:</strong> AI background replacement or expansion in design apps.</li>
+  </ul>
+  <p>Ordinary edits (exposure, colour, crop, classic healing brush) do not add an AI declaration.</p>
+
+  <h2>What to do</h2>
+  <ul>
+    <li><strong>Check what the file says.</strong> Drop it into <a href="/#checker">TagLens</a>. It shows the exact field, the app that wrote it and what each platform is likely to do.</li>
+    <li><strong>If you did use generative AI, the label is accurate.</strong> Keep it. Meta’s rules expect disclosure for realistic AI content.</li>
+    <li><strong>If the declaration is wrong for what you did,</strong> go back to your edit and export from the step before the AI feature, or redo that one change with a non-generative tool. The new export won’t carry the declaration.</li>
+  </ul>
+  <p class="callout">TagLens deliberately does not strip AI declarations to get around labels. Its cleaner removes private data such as GPS and keeps AI disclosure on by default.</p>
+</Guide>

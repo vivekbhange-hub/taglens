@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  jsonLd?: object | object[];
+}
+const { title, description, jsonLd } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const og = new URL('/og.png', Astro.site).href;
+const REPO = 'https://github.com/vivekbhange-hub/taglens';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="author" content="Vivek Bhange" />
+    <meta name="theme-color" content="#f5f2ec" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#12100d" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TagLens" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  </head>
+  <body>
+    <header class="site-head">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label="TagLens home">
+          <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="13.5" cy="13.5" r="9" fill="none" stroke="currentColor" stroke-width="3"/><path d="M20.5 20.5 28 28" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/><path d="M9.5 11.5h8M9.5 15.5h5" stroke="#ff5a1f" stroke-width="2.6" stroke-linecap="round"/></svg>
+          TagLens
+        </a>
+        <nav class="nav" aria-label="Main">
+          <a href="/#checker">Checker</a>
+          <a href="/guides/">Guides</a>
+          <a href="/privacy/" class="hide-sm">Privacy</a>
+          <a href={REPO} rel="noopener">GitHub</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-foot">
+      <div class="wrap">
+        <span>Built by <a href="https://vivekbhange.tech" rel="author">Vivek Bhange</a> · Open source under the MIT licence · <a href={REPO} rel="noopener">Source on GitHub</a></span>
+        <span>Your files never leave your device.</span>
+      </div>
+    </footer>
+  </body>
+</html>
