@@ -72,7 +72,9 @@ It's a static site. On Cloudflare Pages: build command `npm run build`, output f
 
 ## Author
 
-Built by **Vivek Bhange**: https://vivekbhange.tech
+Built by [Vivek Bhange](https://vivekbhange.tech), Full-Stack AI Engineer.
+See this project on my portfolio: https://vivekbhange.tech/projects/taglens/
+More open-source projects: https://vivekbhange.tech/projects/
 
 ## Licence
 
