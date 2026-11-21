@@ -17,12 +17,12 @@ const jsonLd = {
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
   <article class="wrap narrow prose" style="padding-top:56px">
-    <p class="eyebrow"><a href="/guides/">Guides</a> · Updated {new Date(updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-    <h1 style="font-size:clamp(2rem,5vw,3rem)">{h1}</h1>
+    <p class="crumb"><a href="/guides/">Guides</a>, updated {new Date(updated).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+    <h1>{h1}</h1>
     <slot />
-    <div class="card cta-box">
-      <div><strong>Check your own file</strong><br /><span style="color:var(--muted)">See which field triggers the label. Free, and nothing is uploaded.</span></div>
-      <a class="btn" href="/#checker">Open TagLens</a>
+    <div class="try">
+      <p><strong>Check your own file.</strong> See which field triggers the label. Nothing is uploaded.</p>
+      <a class="btn" href="/">Check a file</a>
     </div>
     <p style="margin-top:2em;color:var(--muted);font-size:.92rem">Written by <a href="https://vivekbhange.tech" rel="author">Vivek Bhange</a>. Platform rules change often; if something here is out of date, <a href="https://github.com/vivekbhange-hub/taglens/issues" rel="noopener">open an issue</a>.</p>
   </article>

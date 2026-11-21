@@ -1,191 +1,52 @@
 ---
 import Base from '../layouts/Base.astro';
+import Checker from '../components/Checker.astro';
+import Directory from '../components/Directory.astro';
+import Faq from '../components/Faq.astro';
 
 const title = 'TagLens: why does my photo say “AI info”? Free AI label checker';
-const description = 'See exactly why Instagram, TikTok or LinkedIn labels your photo as AI. TagLens reads Content Credentials (C2PA), IPTC AI fields and EXIF in your browser, and cleans private data like GPS from your own photos. Free, open source, no uploads.';
+const description = 'See exactly why Instagram, TikTok or LinkedIn labels your photo as AI. TagLens reads Content Credentials (C2PA), IPTC AI fields and EXIF in your browser, and removes private data like GPS from your own photos. Free, open source, no uploads.';
 
-const faq = [
+const faq: [string, string][] = [
   ['Why does Instagram say “AI info” on my photo?', 'Usually because the file itself declares AI. Tools like Photoshop Generative Fill, Adobe Firefly, ChatGPT, Google Magic Editor and Galaxy AI write a standard field (C2PA Content Credentials or the IPTC DigitalSourceType) into the image. Meta reads it and adds the label. TagLens shows you which field it is and which tool wrote it.'],
   ['Are my photos uploaded anywhere?', 'No. TagLens runs entirely in your browser. The file is read on your device and nothing is sent to a server. You can turn off your internet after the page loads and it still works.'],
-  ['Can TagLens remove the AI label?', 'No, and that is deliberate. AI labels exist so people can tell real from generated. TagLens explains labels and keeps AI disclosure by default when it cleans private data. It also cannot see or remove invisible watermarks like Google SynthID.'],
-  ['What does the privacy cleaner remove?', 'Location (GPS), camera and lens serial numbers, device details, dates, editing history, comments and AI prompt text saved by Stable Diffusion or ComfyUI. It copies the image data byte for byte, so there is no quality loss, and it keeps the colour profile and orientation.'],
+  ['Can TagLens remove the AI label?', 'No, and that is deliberate. AI labels exist so people can tell real from generated. TagLens explains labels and keeps AI disclosure by default when it removes private data. It also cannot see or remove invisible watermarks like Google SynthID.'],
+  ['What does the cleaner remove?', 'Location (GPS), camera and lens serial numbers, device details, dates, editing history, comments and AI prompt text saved by Stable Diffusion or ComfyUI. It copies the image data byte for byte, so there is no quality loss, and it keeps the colour profile and orientation.'],
   ['Which files work?', 'JPEG, PNG, WebP, HEIC and AVIF images, plus MP4 and MOV video for Content Credentials. Cleaning works for JPEG, PNG and WebP.'],
 ];
 
 const jsonLd = [
   {
-    '@context': 'https://schema.org',
-    '@type': 'WebApplication',
-    name: 'TagLens',
-    url: 'https://ai-tag.vivekbhange.tech/',
-    applicationCategory: 'UtilitiesApplication',
-    operatingSystem: 'Any (runs in the browser)',
-    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-    description,
+    '@context': 'https://schema.org', '@type': 'WebApplication', name: 'TagLens', url: 'https://ai-tag.vivekbhange.tech/',
+    applicationCategory: 'UtilitiesApplication', operatingSystem: 'Any (runs in the browser)',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }, description,
     author: { '@type': 'Person', name: 'Vivek Bhange', url: 'https://vivekbhange.tech' },
-    license: 'https://opensource.org/licenses/MIT',
-    codeRepository: 'https://github.com/vivekbhange-hub/taglens',
+    license: 'https://opensource.org/licenses/MIT', codeRepository: 'https://github.com/vivekbhange-hub/taglens',
   },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
-  },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) },
 ];
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
-  <section class="hero wrap">
-    <p class="eyebrow">Free · Open source · Runs in your browser</p>
-    <h1>See every tag<br />your photo carries.</h1>
-    <p class="lede">Find out why a post gets an <strong>“AI info”</strong> label, which app wrote it, and what private data rides along. Nothing is uploaded.</p>
+  <Checker>
+    <h1>Read the hidden tag on any photo.</h1>
+    <p class="lede">Every image carries notes about itself: which app made it, whether AI touched it, where it was taken. Instagram and TikTok read those notes to decide on an “AI info” label. Now you can read them too.</p>
+  </Checker>
+
+  <Directory />
+
+  <section class="wrap blind below">
+    <h2>What no file reader can see</h2>
+    <p>Invisible watermarks such as Google SynthID or Meta’s Video Seal live inside the pixels, and only their owners can read them. Platforms also run their own detection. So a file with nothing to report here can still be labelled, and TagLens will tell you that rather than pretend otherwise. <a href="/tools/ai-watermark-check/">More on AI watermarks</a>.</p>
   </section>
 
-  <section id="checker" class="wrap checker">
-    <label class="drop" id="drop" for="file">
-      <input id="file" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/avif,video/mp4,video/quicktime,.heic,.heif,.avif" hidden />
-      <span class="drop-icon" aria-hidden="true">
-        <svg viewBox="0 0 48 48"><rect x="6" y="10" width="36" height="28" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="17" cy="20" r="3.5" fill="currentColor"/><path d="m9 35 10-10 7 7 5-5 8 8" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>
-      </span>
-      <span class="drop-title">Drop a photo or video here</span>
-      <span class="drop-sub">or <u>choose a file</u> · JPEG, PNG, WebP, HEIC, AVIF, MP4, MOV</span>
-      <span class="drop-lock" aria-hidden="true">🔒 Stays on your device</span>
-    </label>
-    <p class="status" id="status" role="status" aria-live="polite"></p>
-    <div id="results" hidden></div>
-  </section>
-
-  <section class="wrap how">
-    <h2>What TagLens looks for</h2>
-    <div class="how-grid">
-      <div class="card"><span class="dot" style="--c: var(--k-c2pa)"></span><h3>Content Credentials</h3><p>The signed C2PA record that Adobe, OpenAI, Google, Microsoft, Leica, Samsung and others write. It says which tool made or edited the file and whether AI was involved.</p></div>
-      <div class="card"><span class="dot" style="--c: var(--k-xmp)"></span><h3>IPTC AI field</h3><p>A plain metadata field, <code>DigitalSourceType</code>, with values like <code>trainedAlgorithmicMedia</code>. Meta and others read it to apply labels.</p></div>
-      <div class="card"><span class="dot" style="--c: var(--k-ai)"></span><h3>Prompts in the file</h3><p>Stable Diffusion, ComfyUI and InvokeAI save your full prompt and settings inside the PNG. Anyone you send it to can read them.</p></div>
-      <div class="card"><span class="dot" style="--c: var(--k-exif)"></span><h3>Private EXIF data</h3><p>GPS location, camera serial numbers, owner name and exact times. TagLens shows what is there and can remove it without touching image quality.</p></div>
-    </div>
-    <p class="limits"><strong>What no metadata tool can see:</strong> invisible watermarks such as Google SynthID or Meta Video Seal, and each platform’s own AI detection. A file can show “nothing found” here and still be labelled.</p>
-  </section>
-
-  <section class="wrap narrow faq">
-    <h2>Questions</h2>
-    {faq.map(([q, a]) => (
-      <details>
-        <summary>{q}</summary>
-        <p>{a}</p>
-      </details>
-    ))}
-    <p class="more">Read the guides: <a href="/guides/why-instagram-says-ai-info/">Why Instagram says “AI info”</a> · <a href="/guides/photoshop-generative-fill-ai-label/">Photoshop Generative Fill and the AI label</a> · <a href="/guides/what-is-c2pa-content-credentials/">What are Content Credentials?</a></p>
-  </section>
+  <Faq items={faq}>
+    <p class="more">Longer answers in the guides: <a href="/guides/why-instagram-says-ai-info/">why Instagram says “AI info”</a>, <a href="/guides/photoshop-generative-fill-ai-label/">Photoshop Generative Fill and the label</a>, and <a href="/guides/what-is-c2pa-content-credentials/">what Content Credentials are</a>.</p>
+  </Faq>
 </Base>
 
-<style is:global>
-  .hero { padding-top: 64px; padding-bottom: 28px; }
-  .hero h1 { max-width: 14ch; }
-  .lede { font-size: 1.2rem; color: var(--ink-2); max-width: 58ch; }
-
-  .drop {
-    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-    min-height: 240px; padding: 32px 16px; text-align: center; cursor: pointer;
-    border: 2px dashed var(--line); border-radius: 22px; background:
-      repeating-linear-gradient(135deg, transparent 0 14px, color-mix(in srgb, var(--line) 35%, transparent) 14px 15px), var(--card);
-    transition: border-color .15s, transform .15s;
-  }
-  .drop:hover, .drop.over { border-color: var(--accent); }
-  .drop.over { transform: scale(1.01); }
-  .drop-icon svg { width: 48px; height: 48px; color: var(--accent); }
-  .drop-title { font-family: var(--display); font-size: 1.5rem; font-weight: 700; }
-  .drop-sub { color: var(--muted); }
-  .drop-lock { margin-top: 10px; font-size: 0.82rem; color: var(--ok); font-weight: 600; }
-  .status { min-height: 1.6em; margin: 14px 2px; color: var(--muted); }
-  .status.error { color: var(--ai); }
-
-  .r-top { display: grid; grid-template-columns: 180px 1fr; gap: 20px; align-items: start; }
-  @media (max-width: 640px) { .r-top { grid-template-columns: 1fr; } }
-  .thumb { width: 100%; aspect-ratio: 1; border-radius: 12px; background: var(--bg-2); object-fit: cover; display: grid; place-items: center; color: var(--muted); font-size: 0.85rem; overflow: hidden; }
-  .thumb img, .thumb video { width: 100%; height: 100%; object-fit: cover; }
-  .verdict { border-radius: var(--radius); padding: 22px; border: 1px solid transparent; }
-  .verdict h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin-bottom: 0.3em; }
-  .verdict p { margin: 0; color: var(--ink-2); }
-  .tone-ai { background: var(--ai-bg); border-color: color-mix(in srgb, var(--ai) 30%, transparent); }
-  .tone-ai .badge { background: var(--ai); }
-  .tone-warn { background: var(--warn-bg); border-color: color-mix(in srgb, var(--warn) 30%, transparent); }
-  .tone-warn .badge { background: var(--warn); }
-  .tone-ok { background: var(--ok-bg); border-color: color-mix(in srgb, var(--ok) 30%, transparent); }
-  .tone-ok .badge { background: var(--ok); }
-  .tone-info { background: var(--info-bg); border-color: color-mix(in srgb, var(--info) 30%, transparent); }
-  .tone-info .badge { background: var(--info); }
-  .badge { display: inline-block; color: #fff; font: 700 0.72rem var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; margin-bottom: 10px; }
-  .fileline { margin-top: 12px; font-size: 0.88rem; color: var(--muted); font-family: var(--mono); word-break: break-all; }
-
-  .r-section { margin-top: 28px; }
-  .r-section > h3 { display: flex; align-items: baseline; gap: 10px; font-size: 1.25rem; }
-  .r-section > h3 small { font: 500 0.8rem var(--body); color: var(--muted); letter-spacing: 0; }
-
-  .anatomy { display: flex; height: 34px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); }
-  .anatomy span { min-width: 4px; background: var(--c); }
-  .legend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 10px; font-size: 0.86rem; color: var(--ink-2); }
-  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; background: var(--c); margin-right: 6px; vertical-align: -1px; }
-
-  .platforms { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-  .plat { padding: 16px; }
-  .plat h4 { margin: 0 0 8px; font: 600 0.95rem var(--body); }
-  .plat .out { display: inline-block; font-weight: 650; font-size: 0.92rem; padding: 3px 9px; border-radius: 8px; margin-bottom: 8px; }
-  .plat p { font-size: 0.85rem; color: var(--muted); margin: 0; }
-  .lv-label .out { background: var(--ai-bg); color: var(--ai); }
-  .lv-menu .out, .lv-disclose .out { background: var(--warn-bg); color: var(--warn); }
-  .lv-badge .out { background: var(--info-bg); color: var(--info); }
-  .lv-none .out { background: var(--ok-bg); color: var(--ok); }
-  .reviewed { font-size: 0.8rem; color: var(--muted); margin-top: 8px; }
-
-  .signals { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  .signals li { display: grid; grid-template-columns: auto 1fr; gap: 12px; padding: 14px 16px; }
-  .signals .tag { font: 700 0.7rem var(--mono); text-transform: uppercase; letter-spacing: .05em; padding: 3px 7px; border-radius: 6px; height: fit-content; white-space: nowrap; }
-  .tag.declared { background: var(--ink); color: var(--bg); }
-  .tag.hint { border: 1px solid var(--line); color: var(--muted); }
-  .signals strong { display: block; }
-  .signals span.d { color: var(--muted); font-size: 0.9rem; word-break: break-word; }
-  .signals small { display: block; font-family: var(--mono); font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-
-  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; font-size: 0.92rem; }
-  .kv dt { color: var(--muted); }
-  .kv dd { margin: 0; word-break: break-word; }
-  .timeline { list-style: none; margin: 14px 0 0; padding: 0 0 0 18px; border-left: 2px solid var(--line); }
-  .timeline li { position: relative; margin-bottom: 10px; font-size: 0.92rem; }
-  .timeline li::before { content: ''; position: absolute; left: -24px; top: 7px; width: 10px; height: 10px; border-radius: 50%; background: var(--k-c2pa); }
-  .timeline li.ing::before { background: var(--k-image); }
-
-  .priv { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
-  .priv td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; word-break: break-word; }
-  .priv td:first-child { white-space: nowrap; color: var(--ink-2); }
-  .risk { font: 700 0.68rem var(--mono); text-transform: uppercase; padding: 2px 6px; border-radius: 5px; }
-  .risk.high { background: var(--ai-bg); color: var(--ai); }
-  .risk.medium { background: var(--warn-bg); color: var(--warn); }
-  .risk.low { background: var(--bg-2); color: var(--muted); }
-  .prompt { font-family: var(--mono); font-size: 0.82rem; white-space: pre-wrap; background: var(--bg-2); padding: 10px 12px; border-radius: 8px; max-height: 160px; overflow: auto; margin-top: 6px; }
-
-  .cleaner .opts { display: grid; gap: 10px; margin: 6px 0 16px; }
-  .opt { display: grid; grid-template-columns: auto 1fr; gap: 10px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
-  .opt input { margin-top: 4px; width: 18px; height: 18px; accent-color: var(--accent); }
-  .opt.keep { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); background: color-mix(in srgb, var(--ok-bg) 60%, transparent); }
-  .opt small { display: block; color: var(--muted); }
-  .opt.disabled { opacity: .5; cursor: default; }
-  .warnbox { background: var(--warn-bg); color: var(--ink); border-radius: 10px; padding: 12px 14px; font-size: 0.9rem; margin-bottom: 14px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
-  .done { margin-top: 14px; font-size: 0.92rem; }
-
-  .how { margin-top: 80px; }
-  .how-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
-  .how-grid p { color: var(--ink-2); font-size: 0.95rem; margin: 0; }
-  .dot { display: block; width: 12px; height: 12px; border-radius: 4px; background: var(--c); margin-bottom: 14px; }
-  .limits { margin-top: 18px; padding: 14px 18px; border-radius: 12px; background: var(--bg-2); font-size: 0.95rem; }
-
-  .faq { margin-top: 80px; }
-  .faq details { border-bottom: 1px solid var(--line); padding: 14px 0; }
-  .faq summary { cursor: pointer; font-weight: 650; font-size: 1.05rem; }
-  .faq details p { margin: 10px 0 0; color: var(--ink-2); }
-  .faq .more { margin-top: 22px; color: var(--muted); }
+<style>
+  .blind { margin-top: 96px; }
+  .blind h2 { padding-top: 16px; border-top: 2px solid var(--ink); }
+  .blind p { max-width: 72ch; color: var(--ink-2); font-size: 1.05rem; }
+  .more { margin-top: 24px; color: var(--ink-2); }
 </style>
-
-<script>
-  import { mount } from '../scripts/app.js';
-  mount();
-</script>

@@ -306,6 +306,7 @@ export function minimalXmp(digitalSourceType) {
  * @property {boolean} iptc       remove IPTC / Photoshop block
  * @property {boolean} text       remove comments, PNG text fields and AI prompt settings
  * @property {boolean} keepDisclosure keep Content Credentials and the IPTC AI field
+ * @property {boolean} [gps]      when EXIF is kept, still remove the GPS location from it (and XMP copies of it)
  * @property {string|null} [digitalSourceType] AI field to carry over when XMP is removed
  */
 
@@ -313,14 +314,24 @@ export function minimalXmp(digitalSourceType) {
  * Rewrite a file without the chosen metadata. Image data is copied byte for byte.
  * @returns {{ bytes: Uint8Array, removed: Block[], added: string[] }}
  */
-export function cleanFile(b, opts) {
-  const f = sniffFormat(b);
+export function cleanFile(b0, opts) {
+  const f = sniffFormat(b0);
   if (!CLEANABLE.has(f)) throw new Error(`Cleaning ${f.toUpperCase()} files isn't supported yet.`);
-  const blocks = parseBlocks(b);
+  const blocks = parseBlocks(b0);
+  let b = b0;
+  const gpsRemoved = [];
+  let xmpHasGps = false;
+  if (opts.gps && !opts.exif) {
+    b = b0.slice();
+    for (const blk of blocks.filter((x) => x.kind === 'exif')) {
+      if (stripGpsInExifBlock(b, blk, f)) gpsRemoved.push({ kind: 'exif', name: 'GPS location', start: blk.start, end: blk.start });
+    }
+    xmpHasGps = /exif:GPS(Latitude|Longitude)/.test(xmpFromBlocks(b, blocks) || '');
+  }
   const drop = (blk) => {
     switch (blk.kind) {
       case 'exif': return opts.exif;
-      case 'xmp': return opts.xmp;
+      case 'xmp': return opts.xmp || xmpHasGps;
       case 'iptc': return opts.iptc;
       case 'comment': case 'text': case 'aiParams': return opts.text;
       case 'c2pa': return !opts.keepDisclosure;
@@ -330,9 +341,57 @@ export function cleanFile(b, opts) {
   // Write a minimal XMP with the AI field when disclosure must be kept but no XMP survives.
   const xmpSurvives = blocks.some((x) => x.kind === 'xmp' && !drop(x));
   const dst = opts.keepDisclosure && !xmpSurvives ? opts.digitalSourceType || null : null;
-  if (f === 'jpeg') return cleanJpeg(b, blocks, drop, dst);
-  if (f === 'png') return cleanPng(b, blocks, drop, dst);
-  return cleanWebp(b, blocks, drop, dst);
+  const res = f === 'jpeg' ? cleanJpeg(b, blocks, drop, dst) : f === 'png' ? cleanPng(b, blocks, drop, dst) : cleanWebp(b, blocks, drop, dst);
+  res.removed.unshift(...gpsRemoved);
+  return res;
+}
+
+const TIFF_TYPE_SIZE = [0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8];
+
+/** Where the TIFF structure of an EXIF block starts and ends, per container. */
+function exifTiffRange(b, blk, format) {
+  let s = format === 'jpeg' ? blk.start + 4 : blk.start + 8;
+  const e = format === 'png' ? blk.end - 4 : blk.end;
+  if (b[s] === 0x45 && b[s + 1] === 0x78 && b[s + 2] === 0x69 && b[s + 3] === 0x66) s += 6; // "Exif\0\0"
+  return [s, e];
+}
+
+/**
+ * Blank the GPS sub-IFD in place: every GPS value and entry is zeroed and its entry
+ * count set to 0, so offsets elsewhere in the EXIF stay valid. Returns true if found.
+ */
+export function stripGpsInExifBlock(b, blk, format) {
+  const [t, end] = exifTiffRange(b, blk, format);
+  if (t + 8 > end) return false;
+  const le = b[t] === 0x49;
+  const u16 = (o) => (le ? b[o] | (b[o + 1] << 8) : (b[o] << 8) | b[o + 1]);
+  const u32 = (o) => (le ? (b[o] | (b[o + 1] << 8) | (b[o + 2] << 16)) + b[o + 3] * 2 ** 24 : b[o] * 2 ** 24 + ((b[o + 1] << 16) | (b[o + 2] << 8) | b[o + 3]));
+  const ifd0 = t + u32(t + 4);
+  if (ifd0 + 2 > end) return false;
+  let gps = -1;
+  for (let k = 0, n = u16(ifd0); k < n; k++) {
+    const e = ifd0 + 2 + k * 12;
+    if (e + 12 > end) break;
+    if (u16(e) === 0x8825) gps = t + u32(e + 8);
+  }
+  if (gps < t || gps + 2 > end) return false;
+  const n = u16(gps);
+  for (let k = 0; k < n; k++) {
+    const e = gps + 2 + k * 12;
+    if (e + 12 > end) break;
+    const size = (TIFF_TYPE_SIZE[u16(e + 2)] || 1) * u32(e + 4);
+    if (size > 4) {
+      const v = t + u32(e + 8);
+      if (v >= t && v + size <= end) b.fill(0, v, v + size);
+    }
+    b.fill(0, e, e + 12);
+  }
+  b[gps] = 0; b[gps + 1] = 0;
+  if (format === 'png') {
+    const crc = crc32(b.subarray(blk.start + 4, blk.end - 4));
+    new DataView(b.buffer, b.byteOffset).setUint32(blk.end - 4, crc);
+  }
+  return true;
 }
 
 const DISCLOSURE_NOTE = 'AI disclosure field (IPTC DigitalSourceType)';

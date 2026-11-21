@@ -169,7 +169,8 @@ export function privacyFields(exif) {
   add('Owner name', exif.OwnerName || exif.CameraOwnerName, 'high');
   add('Artist / creator', exif.Artist || exif.creator, 'medium');
   add('Copyright', exif.Copyright || exif.rights, 'low');
-  add('Device', [exif.Make, exif.Model].filter(Boolean).join(' '), 'medium');
+  const model = exif.Model && exif.Make && String(exif.Model).toLowerCase().startsWith(String(exif.Make).toLowerCase()) ? exif.Model : [exif.Make, exif.Model].filter(Boolean).join(' ');
+  add('Device', model, 'medium');
   add('Lens', exif.LensModel, 'low');
   add('Taken on', exif.DateTimeOriginal || exif.CreateDate, 'medium');
   add('Software', exif.Software || exif.CreatorTool, 'low');
@@ -257,13 +258,16 @@ export function buildReport(input) {
   dedup.sort((a, b) => RANK[b.group] - RANK[a.group]);
 
   const top = dedup[0]?.group || 'none';
+  // Platforms act on standard declarations (C2PA, IPTC), not on tool-specific prompt blocks.
+  const standardTop = dedup.find((x) => x.source !== 'PNG text')?.group || 'none';
+  const promptOnly = top === 'generated' && !['generated', 'aiEdited'].includes(standardTop);
   return {
-    verdict: verdictFor(top, cred),
+    verdict: promptOnly ? verdictFor('promptOnly', cred) : verdictFor(top, cred),
     signals: dedup,
     credentials: cred,
     xmp,
     privacy: privacyFields(input.exif),
-    platforms: platformsFor(top, Boolean(cred)),
+    platforms: platformsFor(standardTop, Boolean(cred)),
     // The IPTC AI field the cleaner must carry over when "keep AI disclosure" is on:
     // the file's own XMP value, or a generated-by-AI value when the only declaration
     // is a Stable Diffusion / ComfyUI prompt block that is being removed.
@@ -278,6 +282,8 @@ function prettyAction(a) {
 
 function verdictFor(group, cred) {
   switch (group) {
+    case 'promptOnly':
+      return { key: 'promptOnly', tone: 'warn', title: 'AI generator settings are saved in this file', summary: 'The prompt and settings show it came from an image generator like Stable Diffusion or ComfyUI. These aren’t a standard AI declaration, so platforms may not label it from the file alone.' };
     case 'generated':
       return { key: 'generated', tone: 'ai', title: 'This file says it was made by AI', summary: 'It carries a standard "AI-generated" declaration. Platforms that read these fields will label it.' };
     case 'aiEdited':

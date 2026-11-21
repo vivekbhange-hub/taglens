@@ -1,0 +1,45 @@
+---
+// Platform and AI-app pages: a checker up top, the facts as a ledger, then the directory.
+import Base from './Base.astro';
+import Checker from '../components/Checker.astro';
+import Directory from '../components/Directory.astro';
+
+interface Props { page: { name: string; title: string; description: string; h1: string; points: [string, string][] }; crumb: [string, string]; mark: string; }
+const { page, crumb, mark } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'Article', headline: page.h1, description: page.description, mainEntityOfPage: url,
+  dateModified: '2026-11-21',
+  author: { '@type': 'Person', name: 'Vivek Bhange', url: 'https://vivekbhange.tech' },
+};
+---
+<Base title={page.title} description={page.description} jsonLd={jsonLd}>
+  <Checker preset={{ focus: 'platforms' }}>
+    <p class="crumb"><a href={crumb[1]}>{crumb[0]}</a> <span aria-hidden="true">/</span> {page.name}</p>
+    <h1>{page.h1}</h1>
+    <p class="lede">{page.description}</p>
+  </Checker>
+
+  <section class="wrap facts-sec below">
+    <h2>The short version</h2>
+    <dl class="pts">
+      {page.points.map(([k, v]) => (<div><dt><i style={`--c: ${mark}`}></i>{k}</dt><dd>{v}</dd></div>))}
+    </dl>
+    <p class="checked">Based on public announcements, last reviewed November 2026. Rules change; if this is out of date, <a href="https://github.com/vivekbhange-hub/taglens/issues" rel="noopener">tell us on GitHub</a>.</p>
+  </section>
+
+  <Directory heading="Tools that help" />
+</Base>
+
+<style>
+  .crumb { color: var(--muted); font-size: 0.93rem; margin-bottom: 14px; }
+  .crumb a { color: var(--ink-2); }
+  .facts-sec { margin-top: 80px; }
+  .facts-sec h2 { padding-top: 16px; border-top: 2px solid var(--ink); }
+  .pts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 44px; }
+  @media (max-width: 760px) { .pts { grid-template-columns: 1fr; } }
+  dt { font-weight: 750; font-size: 1.08rem; margin-bottom: 4px; }
+  dt i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; background: var(--c); margin-right: 10px; }
+  dd { margin: 0; color: var(--ink-2); }
+  .checked { margin-top: 26px; color: var(--muted); font-size: 0.92rem; }
+</style>

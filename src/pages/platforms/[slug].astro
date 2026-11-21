@@ -1,0 +1,9 @@
+---
+import Topic from '../../layouts/Topic.astro';
+import { PLATFORMS } from '../../data/pages.js';
+export function getStaticPaths() {
+  return PLATFORMS.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+const { page } = Astro.props;
+---
+<Topic page={page} crumb={['Platforms', '/tools/']} mark="var(--stamp-blue)" />

@@ -1,0 +1,9 @@
+---
+import Topic from '../../layouts/Topic.astro';
+import { AI_TOOLS } from '../../data/pages.js';
+export function getStaticPaths() {
+  return AI_TOOLS.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+const { page } = Astro.props;
+---
+<Topic page={page} crumb={['AI apps', '/tools/']} mark="var(--k-ai)" />

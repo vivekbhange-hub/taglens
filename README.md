@@ -14,6 +14,15 @@ Free, open source, and it runs entirely in your browser. Your files are never up
 - **Shows private data.** GPS location, camera and lens serial numbers, owner name, device, timestamps.
 - **Cleans your own photos without quality loss.** Removes EXIF, XMP, IPTC, comments and prompt text by rewriting metadata blocks only. Image data is copied byte for byte, and the colour profile and orientation are kept.
 - **Maps the file.** A bar showing how much of the file is image data and how much is each kind of metadata.
+- **Removes only the location** when you want to keep camera and date details (the GPS block is blanked in place, so nothing else moves).
+
+## Pages
+
+One engine powers every page, each with its own starting setup:
+
+- **Tools** (`/tools/<slug>/`): photo metadata remover, remove location, EXIF remover, XMP remover, hide your AI prompt, what's in my photo, AI image checker, Content Credentials checker, photo privacy check, AI watermark check. Defined in `src/data/tools.js`.
+- **Platforms** (`/platforms/<slug>/`): Instagram, TikTok, YouTube, LinkedIn, X. **AI apps** (`/ai/<slug>/`): ChatGPT, Adobe Firefly, Google Gemini, Meta AI, Stable Diffusion. Defined in `src/data/pages.js`.
+- **Guides** (`/guides/`) and a generated `sitemap.xml`.
 
 Formats: JPEG, PNG, WebP, HEIC, AVIF, MP4 and MOV can be inspected. JPEG, PNG and WebP can be cleaned.
 
@@ -43,6 +52,7 @@ npm run build    # static site in dist/
 | `src/lib/containers.js` | Parses JPEG segments, PNG chunks and WebP RIFF chunks into labelled blocks; rewrites files without chosen blocks (fixes PNG CRCs, WebP VP8X flags and RIFF size, keeps JPEG orientation). |
 | `src/lib/analyze.js` | Turns the C2PA manifest store, XMP, EXIF and PNG text into a verdict, signals, privacy fields and platform predictions. Pure functions, unit tested. |
 | `src/scripts/app.js` | Browser glue. Uses [`@contentauth/c2pa-web`](https://github.com/contentauth/c2pa-js) (WASM, loaded only when a file has credentials) and [`exifr`](https://github.com/MikeKovarik/exifr). Every value from a file is HTML-escaped before display. |
+| `src/components/Checker.astro` | The drop-a-file hero (a hang tag you drop files on) and all report styles. |
 | `src/pages/guides/` | Plain-English guides on AI labels and Content Credentials. |
 
 Platform behaviour lives in `platformsFor()` in `src/lib/analyze.js`, with a `PLATFORMS_REVIEWED` date. Pull requests that update it with a source link are very welcome.

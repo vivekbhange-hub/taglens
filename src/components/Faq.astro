@@ -1,0 +1,27 @@
+---
+interface Props { items: [string, string][]; heading?: string; }
+const { items, heading = 'Questions' } = Astro.props;
+---
+{items.length > 0 && (
+  <section class="wrap narrow faq below">
+    <h2>{heading}</h2>
+    {items.map(([q, a]) => (
+      <details>
+        <summary>{q}</summary>
+        <p>{a}</p>
+      </details>
+    ))}
+    <slot />
+  </section>
+)}
+
+<style>
+  .faq { margin-top: 72px; }
+  .faq > h2 { padding-top: 16px; border-top: 2px solid var(--ink); }
+  details { border-bottom: 1px solid var(--rule); padding: 15px 0; }
+  summary { cursor: pointer; font-weight: 700; font-size: 1.05rem; list-style-position: outside; }
+  details p { margin: 10px 0 0; color: var(--ink-2); }
+  details[open] summary { color: var(--stamp-blue); }
+  details::details-content { transition: content-visibility .25s allow-discrete, height .25s; height: 0; overflow: clip; }
+  details[open]::details-content { height: auto; }
+</style>

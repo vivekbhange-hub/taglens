@@ -1,0 +1,45 @@
+---
+// The tool directory: grouped like a workbench, each mark coloured by the kind of data it handles.
+import { TOOLS, GROUPS } from '../data/tools.js';
+import { PLATFORMS, AI_TOOLS } from '../data/pages.js';
+interface Props { exclude?: string; heading?: string; }
+const { exclude, heading = 'Start from what you need' } = Astro.props;
+---
+<section class="wrap dir">
+  <h2>{heading}</h2>
+  <div class="dir-groups">
+    {GROUPS.map((g) => (
+      <div class="dir-group">
+        <h3>{g.name}</h3>
+        <p>{g.blurb}</p>
+        <ul>
+          {TOOLS.filter((t) => t.group === g.id && t.slug !== exclude).map((t) => (
+            <li><a href={`/tools/${t.slug}/`}><i style={`--c: var(--k-${t.kind})`}></i><b>{t.name}</b><span>{t.short}</span></a></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+  <div class="dir-strips">
+    <div><h3>How platforms label AI</h3><p>{PLATFORMS.map((p, i) => <>{i > 0 && ', '}<a href={`/platforms/${p.slug}/`}>{p.name}</a></>)}</p></div>
+    <div><h3>What AI apps write into files</h3><p>{AI_TOOLS.map((p, i) => <>{i > 0 && ', '}<a href={`/ai/${p.slug}/`}>{p.name}</a></>)}</p></div>
+  </div>
+</section>
+
+<style>
+  .dir { margin-top: 64px; }
+  .dir > h2 { padding-top: 16px; border-top: 2px solid var(--ink); }
+  .dir-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 10px; }
+  @media (max-width: 900px) { .dir-groups { grid-template-columns: 1fr; gap: 26px; } }
+  .dir-group > p { color: var(--muted); font-size: 0.93rem; margin-bottom: 10px; }
+  .dir-group ul { list-style: none; margin: 0; padding: 0; }
+  .dir-group a { display: grid; grid-template-columns: 12px 1fr; gap: 2px 12px; padding: 12px 12px; margin: 0 -12px; border-radius: 10px; text-decoration: none; transition: background .15s; }
+  .dir-group a:hover { background: var(--paper-2); color: var(--ink); }
+  .dir-group i { grid-row: span 2; width: 12px; height: 12px; margin-top: 6px; border-radius: 3px; background: var(--c); }
+  .dir-group b { font-weight: 700; }
+  .dir-group span { color: var(--ink-2); font-size: 0.92rem; line-height: 1.4; }
+  .dir-strips { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 30px; padding: 22px 24px; background: var(--paper-2); border-radius: 12px; }
+  @media (max-width: 760px) { .dir-strips { grid-template-columns: 1fr; gap: 14px; } }
+  .dir-strips h3 { margin-bottom: 4px; font-size: 1rem; }
+  .dir-strips p { margin: 0; color: var(--ink-2); }
+</style>

@@ -44,9 +44,10 @@ test('XMP composite → AI info in menu', () => {
   assert.equal(r.carryDigitalSourceType, `${D}compositeWithTrainedAlgorithmicMedia`);
 });
 
-test('PNG prompt → generated, and the cleaner is told to carry the AI field', () => {
+test('PNG prompt → prompt-only verdict, no platform label, cleaner carries the AI field', () => {
   const r = buildReport({ ...base, format: 'png', pngText: [{ keyword: 'parameters', text: 'a cat' }] });
-  assert.equal(r.verdict.key, 'generated');
+  assert.equal(r.verdict.key, 'promptOnly');
+  assert.equal(r.platforms[0].level, 'none');
   assert.equal(r.carryDigitalSourceType, `${D}trainedAlgorithmicMedia`);
 });
 
@@ -70,6 +71,7 @@ test('nothing found', () => {
 });
 
 test('privacy fields flag GPS and serials', () => {
+  assert.equal(privacyFields({ Make: 'Canon', Model: 'Canon EOS R6' })[0].value, 'Canon EOS R6');
   const p = privacyFields({ latitude: 18.52, longitude: 73.85, BodySerialNumber: 'X123', Make: 'Canon', Model: 'R6' });
   assert.equal(p.find((x) => x.field === 'GPS location').risk, 'high');
   assert.ok(p.some((x) => x.field === 'Camera serial number'));

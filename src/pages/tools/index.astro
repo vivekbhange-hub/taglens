@@ -1,0 +1,17 @@
+---
+import Base from '../../layouts/Base.astro';
+import Directory from '../../components/Directory.astro';
+---
+<Base title="All tools: metadata remover, AI image checker, C2PA checker | TagLens" description="Free, private tools for photo metadata: remove GPS and EXIF, hide AI prompts, check Content Credentials and AI declarations. Everything runs in your browser.">
+  <section class="wrap intro">
+    <h1>Tools</h1>
+    <p class="lede">One engine, set up for different jobs. Every tool reads your file in the browser and never uploads it.</p>
+  </section>
+  <Directory heading="Pick a tool" />
+</Base>
+
+<style>
+  .intro { padding-top: 56px; }
+  .lede { font-size: 1.15rem; color: var(--ink-2); max-width: 52ch; }
+  :global(.dir) { margin-top: 32px !important; }
+</style>
