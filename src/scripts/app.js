@@ -449,7 +449,7 @@ async function copySummary() {
     ...(r.credentials ? [`Content Credentials: ${r.credentials.generator || 'unknown tool'}, ${r.credentials.state}`] : []),
     'Platforms:',
     ...r.platforms.map((p) => `- ${p.name}: ${p.outcome}`),
-    'Checked with https://ai-tag.vivekbhange.tech/',
+    'Checked with https://taglens.vivekbhange.tech/',
   ];
   try {
     await navigator.clipboard.writeText(lines.join('\n'));

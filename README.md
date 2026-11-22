@@ -3,7 +3,7 @@
 **See why a photo gets an "AI info" label, and what private data it carries.**
 Free, open source, and it runs entirely in your browser. Your files are never uploaded.
 
-**Live:** https://ai-tag.vivekbhange.tech
+**Live:** https://taglens.vivekbhange.tech
 
 ## What it does
 

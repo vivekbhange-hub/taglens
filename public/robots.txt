@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ai-tag.vivekbhange.tech/sitemap.xml
+Sitemap: https://taglens.vivekbhange.tech/sitemap.xml
