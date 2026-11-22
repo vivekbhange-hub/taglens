@@ -6,7 +6,7 @@ import Base from '../layouts/Base.astro';
     <h1>Your files never leave your device</h1>
     <ul>
       <li><strong>No uploads.</strong> TagLens reads files with your browser’s File API. The C2PA reader runs as WebAssembly on your device.</li>
-      <li><strong>No accounts, cookies or analytics.</strong> The site sets no cookies and loads no trackers or third-party scripts. Fonts are self-hosted.</li>
+      <li><strong>No accounts or cookies.</strong> The site sets no cookies. The hosting provider, Cloudflare, counts page visits with its cookieless Web Analytics; your files are never part of that. Fonts are self-hosted.</li>
       <li><strong>Works offline.</strong> Once the page has loaded, you can disconnect from the internet and it keeps working.</li>
       <li><strong>Hosting.</strong> The site is static files on Cloudflare Pages. Like any web host, Cloudflare sees standard request data (IP address, browser) when you load the page. It never sees your files.</li>
       <li><strong>Check it yourself.</strong> The full source is on <a href="https://github.com/vivekbhange-hub/taglens" rel="noopener">GitHub</a>. Open your browser’s network tab while checking a file: no requests carry it.</li>
