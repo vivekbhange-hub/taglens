@@ -1,0 +1,55 @@
+---
+import Guide from '../../layouts/Guide.astro';
+---
+<Guide
+  title="AI tag remover: can you remove the “AI info” label? | TagLens"
+  description="Looking for an AI tag remover? Here is what actually puts the “AI info” label on a photo, why stripping metadata does not reliably remove it, and what you can safely remove instead."
+  h1="AI tag remover: what actually removes the “AI info” label, and what doesn’t"
+  updated="2026-11-22"
+>
+  <p>If you searched for an <strong>AI tag remover</strong>, you probably have a photo or video that Instagram, Facebook, TikTok or LinkedIn marked as AI, and you want the label gone. Before you upload your file to a “remover” site, it helps to know where the tag comes from, because most of those tools only deal with one of the three causes.</p>
+
+  <h2>Where the AI tag comes from</h2>
+  <ol>
+    <li><strong>Metadata in the file.</strong> Apps with generative AI write a note into the image: signed <a href="/guides/what-is-c2pa-content-credentials/">Content Credentials (C2PA)</a> or the IPTC field <code>DigitalSourceType</code>. Platforms read it and add the label.</li>
+    <li><strong>Invisible watermarks in the pixels.</strong> Google SynthID and similar marks are woven into the image itself. They are not metadata, so no metadata tool can see or remove them, and they survive screenshots, crops and re-saving.</li>
+    <li><strong>The platform’s own checks and your disclosure.</strong> Platforms run their own detection and ask you to disclose realistic AI content. A label can come from either, with nothing in the file at all.</li>
+  </ol>
+
+  <h2>Does stripping metadata remove the tag?</h2>
+  <p>Sometimes, and not reliably. Removing the metadata only deals with cause 1. If the image came from a generator that also watermarks its output, or the platform detects it another way, the label comes back. That is why “AI tag remover” sites often work on one upload and fail on the next.</p>
+  <p>There is also a rule question. Meta, TikTok and YouTube all ask creators to disclose realistic AI content. Hiding the declaration on content that really is AI-generated can break those rules, and platforms say they may penalise content that should have been disclosed.</p>
+
+  <h2>When the tag is wrong</h2>
+  <p>The real frustration is usually a <em>real</em> photo that got labelled because one AI feature touched it, such as a generative remove or expand. In that case:</p>
+  <ul>
+    <li><strong>Find out which field caused it.</strong> Drop the file into <a href="/">TagLens</a>. It shows the exact field, which app wrote it and what each platform is likely to do. Nothing is uploaded.</li>
+    <li><strong>Re-export without the AI step.</strong> Go back to your edit, export from the step before the AI feature, or redo that one change with a non-generative tool such as the classic healing brush. The new file will not declare AI. See <a href="/guides/photoshop-generative-fill-ai-label/">the Photoshop guide</a>.</li>
+    <li><strong>Ask the platform.</strong> If a photo with no AI in it is still labelled, raise it through the platform’s help centre. Their detection is not perfect, so a wrong label is worth reporting.</li>
+  </ul>
+
+  <h2>What you can safely remove</h2>
+  <p>Most photos carry far more than an AI note. These are worth removing before you share, and <a href="/tools/remove-metadata/">TagLens removes them</a> in your browser without touching image quality:</p>
+  <ul>
+    <li><strong>Location:</strong> GPS coordinates that can point to your home. <a href="/tools/remove-gps-from-photo/">Remove only the location</a>.</li>
+    <li><strong>Device details:</strong> camera and lens serial numbers, phone model, dates.</li>
+    <li><strong>AI prompts and settings:</strong> Stable Diffusion and ComfyUI save your full prompt, seed and workflow in the PNG. <a href="/tools/remove-prompt-from-png/">Hide your prompt</a>.</li>
+    <li><strong>Editing history:</strong> Photoshop and Lightroom history, file names and document IDs.</li>
+  </ul>
+  <p>By default TagLens keeps the AI disclosure while removing the rest, so your file stays honest and private.</p>
+
+  <h2>Before you use an online AI tag remover</h2>
+  <ul>
+    <li>Check whether it uploads your file. Many do, and you are handing a stranger a photo that may contain your location.</li>
+    <li>Be wary of any tool that promises to beat watermarks or platform detection. Nothing reliably does, and re-compressing the image to try costs quality.</li>
+    <li>If the label is accurate, keeping it is usually the safer choice for your account.</li>
+  </ul>
+
+  <h2>Quick answers</h2>
+  <h3>Is there an AI tag remover that always works?</h3>
+  <p>No. Metadata can be removed, but invisible watermarks and platform detection cannot be undone by any file tool, so no remover can promise the label will not appear.</p>
+  <h3>Does a screenshot remove the AI label?</h3>
+  <p>A screenshot drops most metadata, but pixel watermarks such as SynthID survive it, and platforms can still detect or ask you to disclose AI.</p>
+  <h3>Does TagLens remove AI tags?</h3>
+  <p>No. TagLens shows you which tag is in the file and why a platform labels it, and removes private data like GPS. It keeps AI disclosure by default.</p>
+</Guide>

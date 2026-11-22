@@ -5,6 +5,9 @@ import { PLATFORMS, AI_TOOLS } from '../data/pages.js';
 const ORIGIN = 'https://taglens.vivekbhange.tech';
 const u = (p) => new URL(p, ORIGIN).href;
 const GUIDES = [
+  ['ai-tag-remover', 'AI tag remover: what actually removes the "AI info" label, and what does not'],
+  ['ai-content-remover', 'AI content remover: what can really be removed from AI images and video'],
+  ['remove-ai-metadata', 'How to remove AI metadata (prompts, settings, GPS) from an image'],
   ['why-instagram-says-ai-info', 'Why Instagram says "AI info" on a photo'],
   ['photoshop-generative-fill-ai-label', 'Photoshop Generative Fill and the AI label'],
   ['what-is-c2pa-content-credentials', 'What C2PA Content Credentials are'],

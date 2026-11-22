@@ -1,0 +1,50 @@
+---
+import Guide from '../../layouts/Guide.astro';
+---
+<Guide
+  title="AI content remover: what can really be removed from AI images and video | TagLens"
+  description="What “AI content remover” tools can and cannot do: metadata, Content Credentials, invisible watermarks and platform detection, explained plainly, with the privacy risks of upload-based removers."
+  h1="AI content remover: what can really be removed, and what can’t"
+  updated="2026-11-22"
+>
+  <p>“AI content remover” is used for several different tools: ones that strip AI metadata from images, ones that try to erase watermarks, and “humanizers” that rewrite AI text. They promise the same thing, that nobody will know AI was involved, but they work very differently and none of them can promise it.</p>
+
+  <h2>What is actually in an AI image or video</h2>
+  <table>
+    <thead><tr><th>Layer</th><th>What it is</th><th>Can a tool remove it?</th></tr></thead>
+    <tbody>
+      <tr><td>IPTC and XMP fields</td><td>A plain note such as <code>DigitalSourceType: trainedAlgorithmicMedia</code></td><td>Yes, it is ordinary metadata</td></tr>
+      <tr><td>Content Credentials (C2PA)</td><td>A signed history of how the file was made</td><td>It can be deleted, but not edited without breaking the signature</td></tr>
+      <tr><td>Saved prompts</td><td>Prompt, seed and workflow in PNG text fields</td><td>Yes</td></tr>
+      <tr><td>Invisible watermarks</td><td>Marks such as Google SynthID inside the pixels</td><td>No file tool can see them; they survive screenshots and crops</td></tr>
+      <tr><td>Platform detection</td><td>The platform’s own checks and your disclosure</td><td>Nothing in the file controls this</td></tr>
+    </tbody>
+  </table>
+  <p>An AI content remover can only work on the first three rows. That is why results are hit and miss.</p>
+
+  <h2>Images and video</h2>
+  <p>For photos and video, removing metadata hides the file’s own declaration, but a platform can still label the post because of a watermark or its own detection. Meta, TikTok and YouTube also ask creators to disclose realistic AI content, so removing an accurate declaration can break their rules.</p>
+  <p>If your goal is to stop a <em>real</em> photo being labelled because of one small AI edit, the reliable fix is to re-export it without that edit. The <a href="/guides/ai-tag-remover/">AI tag remover guide</a> walks through it.</p>
+
+  <h2>Text</h2>
+  <p>AI text carries no metadata. “Humanizer” tools rewrite it to slip past AI detectors, but the detectors themselves are unreliable in both directions, so neither side gives a dependable answer. TagLens works with images and video only.</p>
+
+  <h2>The privacy cost of upload-based removers</h2>
+  <p>Most online removers ask you to upload the file. A photo straight from a phone often contains GPS coordinates, the phone model and the time it was taken. Before you upload, check what the file holds. <a href="/tools/whats-in-my-photo/">TagLens shows everything inside a file</a> without uploading it.</p>
+
+  <h2>What TagLens does instead</h2>
+  <ul>
+    <li><strong>Shows the AI declaration</strong> and which app wrote it, so you know why a platform labels it. <a href="/tools/ai-image-checker/">AI image checker</a>.</li>
+    <li><strong>Removes private data</strong> such as location, serial numbers, prompts and editing history, without re-encoding the image. <a href="/tools/remove-metadata/">Metadata remover</a>.</li>
+    <li><strong>Keeps the AI disclosure</strong> by default, so the cleaned file is still honest.</li>
+    <li><strong>Runs in your browser.</strong> The file never leaves your device.</li>
+  </ul>
+
+  <h2>Quick answers</h2>
+  <h3>Can AI content be made undetectable?</h3>
+  <p>Not reliably. Metadata can be removed, but watermarks in the pixels and platform detection remain, and the methods change often.</p>
+  <h3>Is removing AI metadata legal?</h3>
+  <p>Removing metadata from your own files is normal; photographers strip it all the time. Passing AI content off as real can break platform rules and, in some places and contexts, disclosure laws.</p>
+  <h3>What is the safest way to remove private data from an AI image?</h3>
+  <p>Use a tool that runs on your device, remove location, prompts and device details, and keep the AI disclosure. TagLens does exactly that.</p>
+</Guide>

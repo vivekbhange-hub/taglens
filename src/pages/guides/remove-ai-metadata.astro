@@ -1,0 +1,47 @@
+---
+import Guide from '../../layouts/Guide.astro';
+---
+<Guide
+  title="Remove AI metadata from an image: prompts, settings and private data | TagLens"
+  description="Which metadata AI image apps write (prompts, seeds, C2PA, IPTC, EXIF, GPS), what each one reveals, and how to remove the private parts in your browser while keeping the AI disclosure."
+  h1="How to remove AI metadata from an image, and what to keep"
+  updated="2026-11-22"
+>
+  <p>AI image apps write a lot more into a file than a note saying AI was used. Some of it is private: your full prompt, the seed, your workflow, your location if you edited a phone photo. This guide shows what each app writes, which parts are worth removing and how to do it without uploading the file.</p>
+
+  <h2>What AI apps write into images</h2>
+  <table>
+    <thead><tr><th>Field</th><th>Written by</th><th>What it reveals</th></tr></thead>
+    <tbody>
+      <tr><td>PNG text: <code>parameters</code>, <code>prompt</code>, <code>workflow</code></td><td>Stable Diffusion WebUI, ComfyUI, InvokeAI</td><td>Your full prompt, negative prompt, seed, model and node graph</td></tr>
+      <tr><td>Content Credentials (C2PA)</td><td>ChatGPT, Adobe Firefly and Photoshop, Google, Microsoft</td><td>That AI made or edited it, the app, sometimes the edit history</td></tr>
+      <tr><td>IPTC <code>DigitalSourceType</code></td><td>Many editors and generators</td><td>Whether the image is fully generated or a real photo with an AI edit</td></tr>
+      <tr><td>XMP history</td><td>Photoshop, Lightroom</td><td>Editing steps, file names, document IDs</td></tr>
+      <tr><td>EXIF and GPS</td><td>Phones and cameras (kept through AI edits)</td><td>Location, device model, serial numbers, date and time</td></tr>
+    </tbody>
+  </table>
+
+  <h2>What to remove and what to keep</h2>
+  <ul>
+    <li><strong>Remove:</strong> prompts and workflows (they are your work), GPS location, serial numbers and editing history.</li>
+    <li><strong>Keep:</strong> the AI disclosure. It is one small field, it is what platforms expect, and it keeps you on the right side of their rules. Removing it does not reliably stop labels anyway, because of invisible watermarks and platform detection. See <a href="/guides/ai-tag-remover/">why</a>.</li>
+  </ul>
+
+  <h2>How to do it with TagLens</h2>
+  <ol>
+    <li>Open <a href="/tools/remove-metadata/">the metadata remover</a>, or <a href="/tools/remove-prompt-from-png/">the prompt remover</a> for Stable Diffusion and ComfyUI PNGs.</li>
+    <li>Drop in your JPEG, PNG or WebP. TagLens reads it in your browser and lists everything it found.</li>
+    <li>Click <strong>Download private copy</strong> to remove everything private in one go, or open <strong>Choose what to remove</strong> to pick fields one by one.</li>
+    <li>Leave <strong>Keep the AI disclosure and Content Credentials</strong> ticked. If the other fields go, TagLens writes back a minimal note that only says the image involved AI.</li>
+    <li>Drop the downloaded copy back in to confirm what is left.</li>
+  </ol>
+  <p>The image data is copied byte for byte, so there is no quality loss, and the colour profile and orientation are kept.</p>
+
+  <h2>Quick answers</h2>
+  <h3>Does ChatGPT or DALL·E put metadata in images?</h3>
+  <p>Images from OpenAI include Content Credentials (C2PA) that say they were AI-generated. <a href="/ai/chatgpt/">More on ChatGPT images</a>.</p>
+  <h3>Does Stable Diffusion save my prompt in the image?</h3>
+  <p>Yes, by default the WebUI and ComfyUI save the prompt, settings and workflow inside the PNG. Anyone who downloads the original file can read them.</p>
+  <h3>Will removing metadata lower the image quality?</h3>
+  <p>Not with TagLens. It removes metadata blocks and leaves the image data untouched, with no re-compression.</p>
+</Guide>

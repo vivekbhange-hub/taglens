@@ -1,7 +1,7 @@
 import { TOOLS } from '../data/tools.js';
 import { PLATFORMS, AI_TOOLS } from '../data/pages.js';
 
-const GUIDES = ['why-instagram-says-ai-info', 'photoshop-generative-fill-ai-label', 'what-is-c2pa-content-credentials'];
+const GUIDES = ['ai-tag-remover', 'ai-content-remover', 'remove-ai-metadata', 'why-instagram-says-ai-info', 'photoshop-generative-fill-ai-label', 'what-is-c2pa-content-credentials'];
 
 export function GET({ site }) {
   const paths = [
